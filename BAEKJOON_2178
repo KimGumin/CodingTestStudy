@@ -1,0 +1,90 @@
+package example;
+
+import java.util.*;
+
+class xy{
+	int x, y;
+	
+	public xy(int x, int y) {
+		this.x = x;
+		this.y = y;
+	}
+}
+
+public class Main{
+	static Scanner sc = new Scanner(System.in);
+	static int[][] array;
+	static int[][] check;
+	static int count = 1;
+	static int row, column;
+	
+	static void input() {	// 입력부
+		System.out.print("행을 입력하시오 : ");
+		row = sc.nextInt();
+		System.out.print("열을 입력하시오 : ");
+		column = sc.nextInt();
+		
+		array = new int[row][column];
+		check = new int[row][column];
+		
+		for(int i = 0; i < row; i++) {
+			for(int j = 0; j < column; j++) {
+				array[i][j] = sc.nextInt();
+			}
+		}
+	}
+	
+	public static void bfs(int a, int b) {	// bfs를 사용하는 메소드
+		Queue<xy> queue = new LinkedList<>();	// 노드를 저장해놓을 큐 생성
+		a = b -= 1;	// 시작점은 (0, 0)이므로
+		check[a][b] = count;
+		
+		queue.offer(new xy(a, b));		// 큐를 미로의 크기로 생성
+		while(!queue.isEmpty()) {		// 큐의 내용이 비어있을 때까지 검사
+			int x = queue.peek().x;		// 큐의 시작점 객체의 x좌표를 저장
+			int y = queue.peek().y;		// 큐의 시작점 객체의 y좌표를 저장
+			queue.poll();				// peek한 객체 소멸
+			
+			// 해당 위치가 맨 오른쪽이 아니며 해당 위치의 값이 1이고 오른쪽의 값도 1이며 오른쪽을 방문한 적이 없을 때
+			if(y < array[x].length - 1 && array[x][y] == 1 && array[x][y+1] == 1 && check[x][y+1] == 0) {
+				check[x][y+1] = check[x][y] + 1; // 현재 점이 가지고 있는 경로값을 인접한 점의 방문배열에 저장 
+				queue.offer(new xy(x, y + 1)); // 인접한 점을 큐에 넣어준다.
+			}
+
+			// 해당 위치가 맨 아래가 아니며 해당 위치의 값이 1이고 아래의 값도 1이며 아래를 방문한 적이 없을 때
+			if(x < array.length-1 && array[x][y] == 1 && array[x+1][y] == 1 && check[x+1][y] == 0) {
+				check[x+1][y] = check[x][y] + 1;
+				queue.offer(new xy(x+1, y));
+			}  
+			
+			// 해당 위치가 맨 위쪽이 아니며 해당 위치의 값이 1이고 위쪽의 값도 1이며 위를 방문한 적이 없을 때
+			if(x > 0 && array[x][y] == 1 && array[x-1][y] == 1 && check[x-1][y] == 0) {
+				check[x-1][y] = check[x][y] + 1;
+				queue.offer(new xy(x-1, y));
+			}
+
+			// 해당 위치가 맨 왼쪽이 아니며 해당 위치의 값이 1이고 왼쪽의 값도 1이며 왼쪽을 방문한 적이 없을 때
+			if(y > 0 && array[x][y] == 1 && array[x][y-1] == 1 && check[x][y-1] == 0) {
+				check[x][y-1] = check[x][y] + 1;
+				queue.offer(new xy(x, y-1));
+			}
+		}
+	}
+
+	static void print() {	// 테스트용 출력함수
+		for(int i = 0; i < row; i++) {
+			for(int j = 0; j < column; j++) {
+				System.out.print(array[i][j] + " ");
+				if(j == column-1)
+					System.out.println();
+			}
+		}
+	}
+	
+	public static void main(String[] args) {
+		input();
+		print();
+		bfs(1, 1);
+		System.out.println(check[row-1][column-1]);
+	}
+}
