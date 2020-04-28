@@ -35,11 +35,11 @@ public class Main{
 	
 	public static void print() {
 		for (int i = 0; i < row; i++) {
-            for (int j = 0; j < column; j++) {
-                System.out.print(array[i][j] + " ");
-            }
-            System.out.println();
-        }
+            		for (int j = 0; j < column; j++) {
+                		System.out.print(array[i][j] + " ");
+            		}
+            		System.out.println();
+        	}
 	}
 	
 	public static void bfs() {
