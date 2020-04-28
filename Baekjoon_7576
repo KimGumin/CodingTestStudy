@@ -1,0 +1,92 @@
+import java.util.*;
+
+class xy{
+	int x, y;
+	
+	public xy(int x, int y) {
+		this.x = x;
+		this.y = y;
+	}
+}
+
+public class Main{
+	static Scanner sc = new Scanner(System.in);
+	public static int column, row;
+	public static int dx[] = {0, 0, -1, 1};	// 좌우
+	public static int dy[] = {1, -1, 0, 0};	// 상하
+	public static int array[][];	// 전체 토마토 상태 배열
+	public static int check[][];	// 체크하는 배열
+	public static int count = 1;	// 카운트
+	
+	public static void input() {
+		
+		System.out.print("가로 열 수 : ");
+		column = sc.nextInt();
+		System.out.print("세로 행 수 : ");
+		row = sc.nextInt();
+		
+		array = new int[row][column];
+		
+		for(int i = 0; i < row; i++) {
+			for(int j = 0; j < column; j++) {
+				array[i][j] = sc.nextInt();
+			}
+		}
+	}
+	
+	public static void print() {
+		for (int i = 0; i < row; i++) {
+            for (int j = 0; j < column; j++) {
+                System.out.print(array[i][j] + " ");
+            }
+            System.out.println();
+        }
+	}
+	
+	public static void bfs() {
+		Queue<xy> queue = new LinkedList<xy>();
+		for(int i = 0; i < row; i++) {
+			for(int j = 0; j < column; j++) {
+				if(array[i][j]==1)
+					queue.add(new xy(i, j));
+			} 
+		}
+		while(!queue.isEmpty()) {
+			xy dot = queue.poll();
+			for(int i = 0; i < 4; i++) {
+				int nx = dot.x + dx[i];
+				int ny = dot.y + dy[i];
+				if(0 > nx || nx >= row || 0 > ny || ny >= column) {
+					continue;
+				}if(array[nx][ny] != 0)
+					continue;
+				else {
+					if(array[nx][ny] == 0) {
+						array[nx][ny] = array[dot.x][dot.y] + 1;
+						queue.offer(new xy(nx, ny));
+					}
+				}
+			}
+		}
+		
+		int max = 0;
+        for (int i = 0; i < row; i++) {
+            for (int j = 0; j < column; j++) {
+                if (array[i][j] == 0) {
+                    //토마토가 모두 익지 못한 상황이라면 -1 을 출력한다.
+                    System.out.println(-1);
+                    return;
+                }
+                max = Math.max(max, array[i][j]);
+            }
+        }
+        //그렇지 않다면 최대값을 출력한다.
+        System.out.println(max - 1);
+	}
+	
+	public static void main(String[] args) {
+		input();
+		print();
+		bfs();
+	}
+}
