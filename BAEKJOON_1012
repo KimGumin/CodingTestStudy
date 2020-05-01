@@ -15,14 +15,12 @@ public class Main {
 		for (int i = 0; i < row; i++) {
 			for (int j = 0; j < column; j++) {
 				if (array[i][j] == 1 && !v[i][j]) {
-					q.add(new xy(i, j));
-					bfs();
-					v[i][j] = true;
+					bfs(i, j);
 					count++;
 				}
 			}
 		}
-		System.out.println("완료");
+		System.out.println(count);
 	}
 
 	public static void input() {
@@ -40,6 +38,7 @@ public class Main {
 			for (int i = 0; i < row; i++) {
 				for (int j = 0; j < column; j++) {
 					array[i][j] = 0;
+					v[i][j] = false;
 				}
 			}
 
@@ -73,7 +72,9 @@ public class Main {
 		}
 	}
 
-	public static void bfs() {
+	public static void bfs(int y, int x) {
+		q.add(new xy(x, y));
+		v[y][x] = true;
 		int dx[] = { 0, 0, 1, -1 };
 		int dy[] = { 1, -1, 0, 0 };
 
@@ -82,7 +83,7 @@ public class Main {
 			for (int i = 0; i < 4; i++) {
 				int nx = dot.x + dx[i];
 				int ny = dot.y + dy[i];
-				if(nx >= 0 && nx < column && ny >=0 && ny < row) {
+				if(nx >= 0 && nx < column && ny >= 0 && ny < row) {
 					if (array[ny][nx] == 1 && !v[ny][nx]) {
 						q.add(new xy(nx, ny));
 						v[ny][nx] = true;
@@ -90,6 +91,5 @@ public class Main {
 				}
 			}
 		}
-		System.out.println(count);
 	}
 }
