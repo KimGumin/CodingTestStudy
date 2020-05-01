@@ -1,0 +1,47 @@
+import java.util.*;
+public class Main {
+	public static int start, destination;
+	public static int visit[] = new int[100001];
+	
+	public static void input() {
+		Scanner sc = new Scanner(System.in);
+		System.out.print("수빈이가 있는 위치 : ");
+		start = sc.nextInt();
+		System.out.print("동생이 있는 위치 : ");
+		destination = sc.nextInt();
+	}
+	
+	public static void bfs() {
+		Queue<Integer> queue = new LinkedList<Integer>();
+		queue.add(start);
+		visit[start] = 1;
+		
+		while(!queue.isEmpty()) {
+			start = queue.poll();
+			if(start == destination)
+				break;
+			
+			if(visit[start+1] == 0 && start + 1 <= 100000) {
+				queue.add(start + 1);
+				visit[start+1] = visit[start] + 1;
+			}
+			
+			if(visit[start-1] == 0 && start - 1 >= 0) {
+				queue.add(start - 1);
+				visit[start-1] = visit[start] + 1;
+			}
+			
+			if(visit[start*2] == 0 && start * 1 <= 100000) {
+				queue.add(start * 2);
+				visit[start*2] = visit[start] + 1;
+			}
+		}
+		
+		System.out.println(visit[destination] - 1);
+	}
+	
+	public static void main(String[] args) {
+		input();
+		bfs();
+	}
+}
