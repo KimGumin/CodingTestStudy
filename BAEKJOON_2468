@@ -1,0 +1,92 @@
+import java.util.*;
+
+public class Main{
+	static int[][] array;
+	static boolean[][] visit;
+	static int size, max = 0;
+	static int count, ans = 0;
+	static int c[];
+	static int dx[] = {1, -1, 0, 0};
+	static int dy[] = {0, 0, 1, -1};
+	static Queue<xy> q = new LinkedList<xy>();
+
+	static class xy{
+		int x, y;
+		public xy(int y, int x) {
+			this.x = x;
+			this.y = y;
+		}
+	}
+	
+	static void input() {
+		Scanner sc = new Scanner(System.in);
+		System.out.print("지역의 크기를 입력하시오 : ");
+		size = sc.nextInt();
+		
+		array = new int[size][size];
+		visit = new boolean[size][size];
+		
+		for(int i = 0; i < 5; i++) {
+			for(int j = 0; j < 5; j++) {
+				array[i][j] = sc.nextInt();
+				if(max < array[i][j])
+					max = array[i][j];
+			}
+		}
+	}
+	
+	static void bfs(int y, int x, int high) {
+		visit[y][x] = true;
+		q.add(new xy(y, x));
+		
+		while(!q.isEmpty()) {
+			xy dot = q.poll();
+			for(int i = 0; i < 4; i++) {
+				int nx = dot.x + dx[i];
+				int ny = dot.y + dy[i];
+				if(nx >= 0 && nx < size && ny >= 0 && ny < size) {
+					if(array[ny][nx] > high && !visit[ny][nx]) {
+						visit[ny][nx] = true;
+						q.add(new xy(ny, nx));
+					}
+				}
+			}
+		}
+	}
+	
+	static void print() {
+		for(int i = 0; i < 5; i++) {
+			for(int j = 0; j < 5; j++) {
+				System.out.print(array[i][j] + " ");
+			}
+			System.out.println();
+		}
+	}
+	
+	public static void main(String[] args) {
+		input();
+		for(int a = 0; a < max; a++) {
+			for(int i = 0; i < size; i++) {
+				for(int j = 0; j < size; j++) {
+					if(array[i][j] > a && !visit[i][j] ) {
+						count ++;
+						bfs(i,j,a);
+					}
+				}
+			}
+			
+			for(int i = 0; i < size; i++) {	// visit 배열 초기화
+				for(int j = 0; j < size; j++) {
+					visit[i][j] = false;
+				}
+			}
+			
+			if(ans < count)
+				ans = count;
+			System.out.print(count + " ");
+			count = 0;
+		}
+		
+		System.out.println("\n" + ans);
+	}
+}
