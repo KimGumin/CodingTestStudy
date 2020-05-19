@@ -1,0 +1,72 @@
+import java.util.*;
+
+public class Main {
+	static int size;
+	static int minC;
+	static int ans = 999999999;
+	static int map[][];
+	static List<Point> ch = new ArrayList<>();		// 치킨집 리스트
+	static List<Point> home = new ArrayList<>();	// 가정집 리스트
+	static boolean v[];
+	
+	static class Point{	// 위치 객체 클래스
+		int x, y;
+		
+		public Point(int x, int y) {
+			super();
+			this.x = x;
+			this.y = y;
+		}
+	}
+	
+	static void input() {	// 입력부
+		Scanner sc = new Scanner(System.in);
+		System.out.print("구역의 크기를 입력하시오 : ");
+		size = sc.nextInt();
+		System.out.print("최소한의 치킨집의 개수를 입력하시오 : ");
+		minC = sc.nextInt();
+		
+		map = new int[size+1][size+1];
+		for(int i = 1; i < map.length; i++) {
+			for(int j = 1; j < map[i].length; j++) {
+				map[i][j] = sc.nextInt();
+				if(map[i][j] == 1)
+					home.add(new Point(j, i));
+				else if(map[i][j] == 2)
+					ch.add(new Point(j, i));
+			}
+		}
+		v = new boolean[ch.size()+1];
+	}
+	
+	static int dist(Point a, Point b) {	// 거리차 구하기
+		return Math.abs(a.x - b.x) + Math.abs(a.y - b.y);
+	}
+
+	static void solve(int depth, int num) {
+		if(depth > ch.size())	return;
+		if(num == minC) {
+			int total = 0;
+			for(int i = 0; i < home.size(); i++) {
+				int temp = 987654321;
+				for(int j = 0; j < home.size(); j++) {
+					if(!v[j])	continue;
+					temp = Math.min(temp, dist(ch.get(j), home.get(i)));
+				}
+				total += temp;
+			}
+			ans = Math.min(ans, total);
+			return;
+		}
+		solve(depth+1, num);
+		v[depth] = true;
+		solve(depth+1, num+1);
+		v[depth] = false;
+	}
+	
+	public static void main(String[] args) {
+		input();
+		solve(0, 0);
+		System.out.println(ans);
+	}
+}
