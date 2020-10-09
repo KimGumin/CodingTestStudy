@@ -1,0 +1,102 @@
+import java.util.*;
+
+public class Main {
+	static int size, apple, turn, time;
+	static int map[][];
+	static int delta[][] = {{-1, 0},{0, 1},{1, 0},{0, -1}};
+	static LinkedList<rotate> q = new LinkedList<rotate>();
+	
+	static class rotate{
+		int time;
+		String dir;
+		public rotate(int time, String dir) {
+			this.time = time;
+			this.dir = dir;
+		}
+	}
+
+	static void input() {
+		Scanner s = new Scanner(System.in);
+		System.out.print("영역의 크기를 입력하시오 : ");
+		size = s.nextInt();
+		map = new int[size+1][size+1];
+		for (int i = 0; i < size; i++) {
+			for (int j = 0; j < size; j++) {
+				map[i][j] = 0;
+			}
+		}
+
+		map[0][0] = 9;
+		time = 0;
+
+		System.out.print("사과의 개수를 입력하시오 : ");
+		apple = s.nextInt();
+
+		System.out.println("사과의 위치를 입력하시오");
+		for (int i = 0; i < apple; i++) {
+			int x = s.nextInt();
+			int y = s.nextInt();
+			map[y][x] = 1;
+		}
+
+		System.out.print("뱀의 방향 전환 횟수를 입력하시오 : ");
+		turn = s.nextInt();
+		
+		for(int i = 0; i < turn; i++) {
+			int time = s.nextInt();
+			String dir = s.next();
+			q.add(new rotate(time, dir));
+		}
+	}
+
+	static void bfs() {
+		int time = 1;
+		LinkedList<Trace> t = new LinkedList<Trace>();
+		t.add(new Trace(1, 1, 1));
+		rotate rotateTime = q.removeFirst();
+		
+		int ny = 1, nx = 1, dir = 1;
+		while(true) {
+			ny += delta[dir][0];
+			nx += delta[dir][1];
+			
+			if(!(ny >= 1 && ny <= size && nx >=1 && nx <= size) || map[ny][nx] == 9)
+				break;
+			else if(map[ny][nx] == 1) {
+				t.add(new Trace(ny, nx, dir));
+				map[ny][nx] = 9;
+			}else {
+				t.add(new Trace(ny, nx, dir));
+				map[ny][nx] = 9;
+				Trace tail = t.removeFirst();
+				map[tail.y][tail.x] = 0;
+			}
+			
+			if(rotateTime.time == time) {
+                if(rotateTime.dir.equals("D")) {
+                    dir = (dir+1)%4;
+                }else {
+                    dir = (dir+3)%4;
+                }
+                if(t.size() > 0)
+                    rotateTime = q.removeFirst();
+            }
+            time++;
+		}
+		System.out.println(time);
+	}
+
+	static class Trace{
+		int y, x, dir;
+		public Trace(int y, int x, int dir) {
+			this.y = y;
+			this.x = x;
+			this.dir = dir;
+		}
+	}
+	
+	public static void main(String[] args) {
+		input();
+		bfs();
+	}
+}
