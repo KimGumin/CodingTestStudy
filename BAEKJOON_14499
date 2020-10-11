@@ -48,38 +48,38 @@ public class Main {
 			this.front = 0;
 			this.back = 0;
 		}
-		
-		 public void moveEast() {
-	            int temp = top;
-	            top = west;
-	            west = bottom;
-	            bottom = east;
-	            east = temp;
-	        }
 
-	        public void moveWest() {
-	            int temp = top;
-	            top = east;
-	            east = bottom;
-	            bottom = west;
-	            west = temp;
-	        }
+		public void moveEast() {
+			int temp = top;
+			top = west;
+			west = bottom;
+			bottom = east;
+			east = temp;
+		}
 
-	        public void moveSouth() {
-	            int temp = top;
-	            top = back;
-	            back = bottom;
-	            bottom = front;
-	            front = temp;
-	        }
+		public void moveWest() {
+			int temp = top;
+			top = east;
+			east = bottom;
+			bottom = west;
+			west = temp;
+		}
 
-	        public void moveNorth() {
-	            int temp = top;
-	            top = front;
-	            front = bottom;
-	            bottom = back;
-	            back = temp;
-	        } 
+		public void moveSouth() {
+			int temp = top;
+			top = back;
+			back = bottom;
+			bottom = front;
+			front = temp;
+		}
+
+		public void moveNorth() {
+			int temp = top;
+			top = front;
+			front = bottom;
+			bottom = back;
+			back = temp;
+		}
 	}
 
 	static void rotate() {
@@ -87,38 +87,63 @@ public class Main {
 		while (!cmd.isEmpty()) {
 			int com = cmd.poll();
 			if (com == 1) { // 동
-				if (x > column - 1)
-					break;
-				d.moveEast();
-				x++;
+				if (x < column-1) {
+					d.moveEast();
+					x++;
+					if (map[y][x] == 0)
+						map[y][x] = d.bottom;
+					else {
+						d.bottom = map[y][x];
+						map[y][x] = 0;
+					}
+				}
+				else
+					continue;
 			}
 
 			if (com == 2) { // 서
-				if (x < 1)
-					break;
-				d.moveWest();
-				x--;
+				if (x > 0) {
+					d.moveWest();
+					x--;
+					if (map[y][x] == 0)
+						map[y][x] = d.bottom;
+					else {
+						d.bottom = map[y][x];
+						map[y][x] = 0;
+					}
+				}
+				else
+					continue;
 			}
 
 			if (com == 3) { // 북
-				if (y < 1)
-					break;
-				d.moveNorth();
-				y--;
+				if (y > 0) {
+					d.moveNorth();
+					y--;
+					if (map[y][x] == 0)
+						map[y][x] = d.bottom;
+					else {
+						d.bottom = map[y][x];
+						map[y][x] = 0;
+					}
+				}
+				else
+					continue;
 			}
 
 			if (com == 4) { // 남
-				if (y > row - 1)
-					break;
-				d.moveSouth();
-				y++;
-			}
-
-			if (map[y][x] == 0)
-				map[y][x] = d.bottom;
-			else {
-				d.bottom = map[y][x];
-				map[y][x] = 0;
+				if (y < row-1) {
+					d.moveSouth();
+					y++;
+					if (map[y][x] == 0)
+						map[y][x] = d.bottom;
+					else {
+						d.bottom = map[y][x];
+						map[y][x] = 0;
+					}
+				}
+				else
+					continue;
 			}
 			System.out.println(d.top);
 		}
