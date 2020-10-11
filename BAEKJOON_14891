@@ -1,0 +1,103 @@
+import java.io.*;
+import java.util.*;
+
+// 1번 톱니바퀴의 12시방향이 N극이면 0점, S극이면 1점
+// 2번 톱니바퀴의 12시방향이 N극이면 0점, S극이면 2점
+// 3번 톱니바퀴의 12시방향이 N극이면 0점, S극이면 4점
+// 4번 톱니바퀴의 12시방향이 N극이면 0점, S극이면 8점
+public class Main {
+	static int cogwheel[][] = new int[4][8];
+	static int turn;
+	static int score = 0;
+	static LinkedList<rotation> r = new LinkedList<rotation>();
+	
+	static void input() throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st;
+		Scanner sc = new Scanner(System.in);
+		// 12시 방향부터 시계방향으로 N극은 0, S극은 1
+		System.out.println("각 4개의 톱니바퀴를 입력하시오");
+		for(int i = 0; i < 4; i++) {
+			String s = br.readLine();
+			for(int j = 0; j < 8; j++) {
+				cogwheel[i][j] = s.charAt(j) - '0';
+			}
+		}
+		
+		System.out.print("회전횟수를 입력하시오 : ");
+		turn = sc.nextInt();
+		
+		System.out.println("회전시킬 톱니바퀴 번호와 방향을 입력하시오 ");
+		for(int i = 0; i < turn; i++) {
+			int num = sc.nextInt();
+			int dir = sc.nextInt();
+			r.add(new rotation(num-1, dir));
+		}
+	}
+	
+	static class rotation{
+		private int num;
+		private int dir;
+		
+		public rotation(int num, int dir) {
+			this.num = num;
+			this.dir = dir;
+		}
+	}
+	
+	static void left(int index, int dir) {
+		if(index < 0)	return;
+		if(cogwheel[index][2] != cogwheel[index+1][6]) {
+			left(index-1, -dir);
+			rotate(index, dir);
+		}
+	}
+	
+	static void right(int index, int dir) {
+		if(index > 3)	return;
+		if(cogwheel[index][6] != cogwheel[index-1][2]) {
+			right(index+1, -dir);
+			rotate(index, dir);
+		}
+	}
+	
+	static void rotate(int index, int dir) {
+		if(dir == 1) {
+			int temp = cogwheel[index][7];
+			for(int i = 7; i > 0; i--) {
+				cogwheel[index][i] = cogwheel[index][i-1];
+			}
+			cogwheel[index][0] = temp;
+		}
+		
+		else {
+			int temp = cogwheel[index][0];
+			for(int i = 0; i < 7; i++) {
+				cogwheel[index][i] = cogwheel[index][i+1];
+			}
+			cogwheel[index][7] = temp;
+		}
+	}
+	
+	static void test() {
+		while(!r.isEmpty()) {
+			rotation rot = r.removeFirst();
+			left(rot.num - 1, -rot.dir);
+			right(rot.num + 1, -rot.dir);
+			rotate(rot.num, rot.dir);
+		}
+		score();
+	}
+	
+	static void score() {
+		for(int i = 0; i < 4; i++) {
+			score += (cogwheel[i][0] * Math.pow(2, i));
+		}
+	}
+	
+	public static void main(String[] args) throws IOException{
+		input();
+		test();
+		System.out.println(score);
+	}
+}
