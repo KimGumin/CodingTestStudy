@@ -9,10 +9,7 @@ public class Main {
 	static Queue<Integer> cmd = new LinkedList<Integer>();
 
 	static void input() {
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		StringTokenizer st;
 		Scanner sc = new Scanner(System.in);
-
 		System.out.println("지도의 크기를 입력하시오(세로, 가로)");
 		row = sc.nextInt();
 		column = sc.nextInt();
