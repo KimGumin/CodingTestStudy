@@ -1,0 +1,134 @@
+import java.io.*;
+import java.util.*;
+
+public class Main {
+	static int row, column;
+	static int x, y;
+	static int command;
+	static int map[][];
+	static Queue<Integer> cmd = new LinkedList<Integer>();
+
+	static void input() {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st;
+		Scanner sc = new Scanner(System.in);
+
+		System.out.println("지도의 크기를 입력하시오(세로, 가로)");
+		row = sc.nextInt();
+		column = sc.nextInt();
+		map = new int[row][column];
+		for (int i = 1; i < map.length; i++) {
+			for (int j = 1; j < map[i].length; j++) {
+				map[i][j] = 0;
+			}
+		}
+
+		System.out.println("주사위의 좌표를 입력하시오(x, y)");
+		x = sc.nextInt();
+		y = sc.nextInt();
+
+		System.out.print("명령의 개수를 입력하시오 : ");
+		command = sc.nextInt();
+
+		for (int i = 0; i < map.length; i++) {
+			for (int j = 0; j < map[i].length; j++) {
+				map[i][j] = sc.nextInt();
+			}
+		}
+
+		for (int i = 0; i < command; i++)
+			cmd.add(sc.nextInt());
+	}
+
+	static class Dice {
+		int top, bottom, west, east, front, back;
+
+		public Dice() {
+			this.top = 0;
+			this.bottom = 0;
+			this.west = 0;
+			this.east = 0;
+			this.front = 0;
+			this.back = 0;
+		}
+		
+		 public void moveEast() {
+	            int temp = top;
+	            top = west;
+	            west = bottom;
+	            bottom = east;
+	            east = temp;
+	        }
+
+	        public void moveWest() {
+	            int temp = top;
+	            top = east;
+	            east = bottom;
+	            bottom = west;
+	            west = temp;
+	        }
+
+	        public void moveSouth() {
+	            int temp = top;
+	            top = back;
+	            back = bottom;
+	            bottom = front;
+	            front = temp;
+	        }
+
+	        public void moveNorth() {
+	            int temp = top;
+	            top = front;
+	            front = bottom;
+	            bottom = back;
+	            back = temp;
+	        } 
+	}
+
+	static void rotate() {
+		Dice d = new Dice();
+		while (!cmd.isEmpty()) {
+			int com = cmd.poll();
+			if (com == 1) { // 동
+				if (x > column - 1)
+					break;
+				d.moveEast();
+				x++;
+			}
+
+			if (com == 2) { // 서
+				if (x < 1)
+					break;
+				d.moveWest();
+				x--;
+			}
+
+			if (com == 3) { // 북
+				if (y < 1)
+					break;
+				d.moveNorth();
+				y--;
+			}
+
+			if (com == 4) { // 남
+				if (y > row - 1)
+					break;
+				d.moveSouth();
+				y++;
+			}
+
+			if (map[y][x] == 0)
+				map[y][x] = d.bottom;
+			else {
+				d.bottom = map[y][x];
+				map[y][x] = 0;
+			}
+			System.out.println(d.top);
+		}
+	}
+
+	public static void main(String[] args) {
+		input();
+		rotate();
+	}
+}
