@@ -1,0 +1,150 @@
+import java.io.*;
+import java.util.*;
+
+public class Main {
+	static int size, p, fuel, map[][], check[][];
+	static int current_x, current_y;
+	static int dx[] = {-1, 1, 0, 0};
+	static int dy[] = {0, 0, -1, 1};
+	static Queue<Passenger> pp = new LinkedList<Passenger>();
+	static Queue<Taxi> t = new LinkedList<Taxi>();
+	static HashMap<Integer, Passenger> wait = new HashMap<Integer, Passenger>();
+	static Taxi taxi;
+	static Passenger used = null;
+	
+	static void input() {
+		Scanner sc = new Scanner(System.in);
+		System.out.println("지도 크기를 입력하시오 : ");
+		System.out.println("승객의 수를 입력하시오 : ");
+		System.out.println("초기 연료의 양을 입력하시오 : ");
+		size = sc.nextInt();
+		p = sc.nextInt();
+		fuel = sc.nextInt();
+		map = new int[size][size];
+		
+		for(int i = 0; i < size; i++) {
+			for(int j = 0; j < size; j++) {
+				map[i][j] = sc.nextInt();
+			}
+		}
+		
+		System.out.print("현재 위치를 입력하시오(행, 열) : ");
+		current_y = sc.nextInt();
+		current_x = sc.nextInt();
+		taxi = new Taxi(current_y-1, current_x-1, 0);
+		
+		for(int i = 0; i < p; i++) {
+			int x, y, t_x, t_y;
+			y = sc.nextInt();
+			x = sc.nextInt();
+			t_y = sc.nextInt();
+			t_x = sc.nextInt();
+			Passenger pa = new Passenger(i+2, y, x, t_y, t_x);
+			wait.put(i+2, pa);
+			map[y][x] = i+2;
+		}
+	}
+	
+	static class Passenger{
+		int id, x, y, t_x, t_y;
+		public Passenger(int id, int y, int x, int t_y, int t_x) {
+			this.id = id;
+			this.y = y;
+			this.x = x;
+			this.t_y = t_y;
+			this.t_x = t_x;
+		}
+	}
+	
+	static class Taxi{
+		int x, y, move;
+		public Taxi(int x, int y, int move){
+			this.x = x;
+			this.y = y;
+			this.move = move;
+		}
+	}
+	
+	static void solution() {
+		while(!wait.isEmpty()) {
+			int startFuel = bfs();
+			fuel -= startFuel;
+			if(fuel < 0)	break;
+			int terminalFuel = bfs();
+			fuel -= terminalFuel;
+			if(fuel < 0)	break;
+			fuel = (terminalFuel-startFuel)*2;
+		}
+		System.out.println(fuel < 0 ? -1 : fuel);
+	}
+	
+	static int bfs() {
+		check = new int[size][size];
+		int preMove = taxi.move;
+		check[taxi.y][taxi.x] = 1;
+		t.add(taxi);
+		
+		while(!t.isEmpty()) {
+			Taxi now = t.poll();
+			if(fuel - now.move < 0) {
+				return -1;
+			}
+			
+			if(preMove != now.move && !pp.isEmpty()) {
+				break;
+			}
+			
+			preMove = now.move;
+			
+			if(used == null) {
+				int id = map[now.y][now.x];
+				if(id > 1) {
+					Passenger p = wait.get(id);
+					pp.add(p);
+				}
+			}else {
+				if(now.x == used.t_x && now.y == used.t_y) {
+					wait.remove(used.id);
+					used = null;
+					taxi = new Taxi(now.y, now.x, now.move+1);
+					return preMove;
+				}
+			}
+			
+			for(int i = 0; i < 4; i++) {
+				int nx = now.x + dx[i];
+				int ny = now.y + dy[i];
+				if(nx>0 && ny>0 && nx<size && ny<size) {
+					if(map[ny][nx]!=1 && check[ny][nx] == 0) {
+						t.add(new Taxi(ny, nx, now.move+1));
+						check[ny][nx] = 1;
+					}
+				}
+			}
+		}
+		if(pp.isEmpty())
+			return -1;
+		used = findCustomer(pp);
+		taxi = new Taxi(used.y, used.x, 0);
+			return preMove;
+	}
+	
+	static Passenger findCustomer(Queue<Passenger> target) {
+		Passenger tar = target.poll();
+		while(!target.isEmpty()) {
+			Passenger compare = target.poll();
+			if(compare.x < tar.x) {
+				tar = compare;
+			}else if(compare.t_x == tar.t_x && compare.y < tar.y) {
+				tar = compare;
+			}
+		}
+		
+		return tar;
+	}
+	
+	public static void main(String[] args) {
+		input();
+		solution();
+	}
+}
