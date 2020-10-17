@@ -1,7 +1,6 @@
 import java.io.*;
 import java.util.*;
 
-
 public class Main {
 	static int map[][], temp[][], row, column, past;
 	static int dx[] = { -1, 1, 0, 0 }; // 서동북남
@@ -68,37 +67,29 @@ public class Main {
 	}
 
 	public static void cycle() {
-        // 위쪽꺼
-        for(int i=arc1y-1; i>0; i--) {
-            map[i][0] = map[i-1][0];
-        }
-        for(int i=0; i<column-1; i++) {
-            map[0][i] = map[0][i+1];
-        }
-        for(int i=0; i<arc1y; i++) {
-            map[i][column-1] = map[i+1][column-1];
-        }
-        for(int i=column-1; i>1; i--) {
-            map[arc1y][i] = map[arc1y][i-1];
-        }
-        // 한칸 채우기
-        map[arc1y][1] = 0;
-        
-        //아래쪽꺼
-        for(int i = arc2y+1; i<row-1; i++) {
-            map[i][0] = map[i+1][0];
-        }
-        for(int i=0; i<column-1; i++) {
-            map[row-1][i] = map[row-1][i+1];
-        }
-        for(int i=row-1; i>arc2y; i--) {
-            map[i][column-1] = map[i-1][column-1];
-        }
-        for(int i=column-1; i>1; i--) {
-            map[arc2y][i] = map[arc2y][i-1];
-        }
-        map[arc2y][1] = 0;
-    }
+		// 위쪽
+		for (int i = arc1y - 1; i > 0; i--)
+			map[i][0] = map[i - 1][0];
+		for (int i = 0; i < column - 1; i++)
+			map[0][i] = map[0][i + 1];
+		for (int i = 0; i < arc1y; i++)
+			map[i][column - 1] = map[i + 1][column - 1];
+		for (int i = column - 1; i > 1; i--)
+			map[arc1y][i] = map[arc1y][i - 1];
+		// 한칸 채우기
+		map[arc1y][1] = 0;
+
+		// 아래쪽꺼
+		for (int i = arc2y + 1; i < row - 1; i++)
+			map[i][0] = map[i + 1][0];
+		for (int i = 0; i < column - 1; i++)
+			map[row - 1][i] = map[row - 1][i + 1];
+		for (int i = row - 1; i > arc2y; i--)
+			map[i][column - 1] = map[i - 1][column - 1];
+		for (int i = column - 1; i > 1; i--)
+			map[arc2y][i] = map[arc2y][i - 1];
+		map[arc2y][1] = 0;
+	}
 
 	static void clean() {
 		for (int i = 0; i < past; i++) {
